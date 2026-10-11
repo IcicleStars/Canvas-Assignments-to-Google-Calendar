@@ -11,21 +11,24 @@ CALENDAR_NAME = os.getenv("GOOGLE_CALENDAR_NAME", "Canvas Deadlines")
 
 
 def sync_events(service, calendar_id, items):
+    # get existing events and ignore
     existing_events = (
         service.events()
         .list(
             calendarId=calendar_id,
             privateExtendedProperty="app=canvas_sync",
+            showDeleted = False,
             maxResults=2500,
         )
         .execute()
         .get("items", [])
     )
 
+    # exclude cancelled items from lookup map
     gcal_map = {
         e["extendedProperties"]["private"]["canvas_id"]: e
         for e in existing_events
-        if "extendedProperties" in e and "private" in e["extendedProperties"]
+        if e.get("status") != "cancelled" and "extendedProperties" in e and "private" in e["extendedProperties"]
     }
 
     created = 0
