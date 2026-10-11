@@ -31,7 +31,7 @@ def create_calendar(service, name: str) -> str:
     page_token = None
     while True: 
         res = service.calendarList().list(pageToken=page_token).execute() 
-        for cal in res.get("items, []"): 
+        for cal in res.get("items", []): 
             if cal.get("summary") == name: 
                 return cal["id"]
             page_token = res.get("nextPageToken")
