@@ -34,9 +34,9 @@ def create_calendar(service, name: str) -> str:
         for cal in res.get("items", []): 
             if cal.get("summary") == name: 
                 return cal["id"]
-            page_token = res.get("nextPageToken")
-            if not page_token: 
-                break 
+        page_token = res.get("nextPageToken")
+        if not page_token: 
+            break 
 
-        new_cal = {"summary": name, "description": "Canvas due dates and deadlines"}
-        return service.calendars().insert(body=new_cal).execute()["id"]
+    new_cal = {"summary": name, "description": "Canvas due dates and deadlines"}
+    return service.calendars().insert(body=new_cal).execute()["id"]
